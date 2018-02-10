@@ -54,10 +54,9 @@ public class Indexer {
                 case ".I": {
                     if (builder.length() != 0) {
                         writer.addDocument(doc);
-                        System.out.println("writer adds document");
                     }
                     doc = new Document();
-                    StringField field = new StringField("id", line.substring(2, 3), Field.Store.YES);
+                    StringField field = new StringField("id", line.substring(3, line.length()), Field.Store.YES);
                     doc.add(field);
                     break;
                 }
