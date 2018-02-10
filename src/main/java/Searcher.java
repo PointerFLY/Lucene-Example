@@ -8,6 +8,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Searcher {
 
@@ -29,18 +31,21 @@ public class Searcher {
         }
     }
 
-    public void search(String queryStr) {
+    public void search(String queryStr, int num) {
         QueryParser parser = new QueryParser("content", analyzer);
 
         try {
             Query query = parser.parse(queryStr);
-            ScoreDoc[] hits = searcher.search(query, 5).scoreDocs;
+            ScoreDoc[] hits = searcher.search(query, num).scoreDocs;
             // Iterate through the results.
+            ArrayList<Integer> ids = new ArrayList<>();
             for (int i = 0; i < hits.length; i++) {
                 Document hitDoc = searcher.doc(hits[i].doc);
-                String idStr = hitDoc.get("id");
-                System.out.println(idStr);
+                int idStr = Integer.parseInt(hitDoc.get("id"));
+                ids.add(idStr);
             }
+            Collections.sort(ids);
+            System.out.println(ids);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
