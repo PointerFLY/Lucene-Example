@@ -3,10 +3,10 @@ public class Main {
     public static void main(String[] args) {
         FileUtils.initialize();
 
-        Indexer indexer = new Indexer(FileUtils.DOCS_DIR, FileUtils.INDEX_DIR);
+        Indexer indexer = new Indexer();
         indexer.createIndex();
 
-        Searcher searcher = new Searcher(FileUtils.INDEX_DIR);
+        Searcher searcher = new Searcher();
         searcher.readIndex();
     }
 }

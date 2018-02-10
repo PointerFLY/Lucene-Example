@@ -10,9 +10,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileUtils {
-    public static final Path TEMP_DIR = Paths.get("temp/");
+    private static final Path TEMP_DIR = Paths.get("temp/");
+    private static final Path DOCS_DIR = TEMP_DIR.resolve("docs/");
     public static final Path INDEX_DIR = TEMP_DIR.resolve("index/");
-    public static final Path DOCS_DIR = TEMP_DIR.resolve("docs/");
+
+    public static final Path DOCS_FILE = DOCS_DIR.resolve("cran.all.1400");
+    public static final Path QUERY_FILE = DOCS_DIR.resolve("cran.qry");
+    public static final Path BASELINE_FILE = DOCS_DIR.resolve("cranqrel");
 
     private static final URL DOCS_URL;
 
