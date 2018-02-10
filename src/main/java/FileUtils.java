@@ -2,40 +2,50 @@ import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileUtils {
-    public static final String TEMP_DIR = "temp/";
-    public static final String INDEX_DIR = TEMP_DIR.concat("index/");
-    public static final String DOCS_DIR = TEMP_DIR.concat("docs/");
+    public static final Path TEMP_DIR = Paths.get("temp/");
+    public static final Path INDEX_DIR = TEMP_DIR.resolve("index/");
+    public static final Path DOCS_DIR = TEMP_DIR.resolve("docs/");
 
-    private static final String DOCS_URL = "http://ir.dcs.gla.ac.uk/resources/test_collections/cran/cran.tar.gz";
+    private static final URL DOCS_URL;
+
+    static {
+        try {
+            DOCS_URL = new URL("http://ir.dcs.gla.ac.uk/resources/test_collections/cran/cran.tar.gz");
+        } catch (MalformedURLException e) {
+            throw new Error(e);
+        }
+    }
 
     public static void initialize() {
         createDirectory(INDEX_DIR);
         createDirectory(DOCS_DIR);
-        String gzipFile = fetchDocs(DOCS_URL, TEMP_DIR);
+        Path gzipFile = fetchDocs(DOCS_URL, TEMP_DIR);
+        assert(gzipFile != null);
         decompress(gzipFile, DOCS_DIR);
     }
 
-    private static void decompress(String gzipFile, String dir) {
+    private static void decompress(Path gzipFile, Path dir) {
         final TarGZipUnArchiver unarchiver = new TarGZipUnArchiver();
         ConsoleLoggerManager manager = new ConsoleLoggerManager();
         manager.initialize();
         unarchiver.enableLogging(manager.getLoggerForComponent(null));
-        unarchiver.setSourceFile(new File(gzipFile));
-        unarchiver.setDestDirectory(new File(dir));
+        unarchiver.setSourceFile(gzipFile.toFile());
+        unarchiver.setDestDirectory(dir.toFile());
         unarchiver.extract();
     }
 
-    private static void createDirectory(String path) {
-        Path dir = Paths.get(path);
-        if (Files.notExists(dir)) {
+    private static void createDirectory(Path path) {
+        if (Files.notExists(path)) {
             try {
-                Files.createDirectories(dir);
+                Files.createDirectories(path);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(1);
@@ -43,18 +53,19 @@ public class FileUtils {
         }
     }
 
-    private static String fetchDocs(String urlStr, String toDir) {
+    private static Path fetchDocs(URL url, Path toDir) {
         try {
+            String urlStr = url.toString();
             int index = urlStr.lastIndexOf('/');
             String fileName = urlStr.substring(index + 1);
-            Path path = Paths.get(toDir + fileName);
+            Path path = toDir.resolve(fileName);
 
             if (Files.notExists(path)) {
-                URL url = new URL(urlStr);
                 InputStream in = url.openStream();
                 Files.copy(in, path);
+                in.close();
             }
-            return path.toString();
+            return path;
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

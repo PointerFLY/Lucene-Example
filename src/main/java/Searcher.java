@@ -1,6 +1,8 @@
+import java.nio.file.Path;
+
 public class Searcher {
 
-    public Searcher(String indexDir) {
+    public Searcher(Path indexDir) {
 
     }
 
