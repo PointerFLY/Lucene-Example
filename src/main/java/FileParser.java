@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 class FileParser {
 
@@ -14,52 +15,46 @@ class FileParser {
     }
 
     static void readDocument(DocumentProcessor processor) {
-        DocumentModel model = new DocumentModel(1, "", "", "", "");
-        processor.process(model);
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(FileUtils.DOCS_FILE.toFile()));
+            String text = String.join("", reader.lines().collect(Collectors.toList()));
+            String lines[] = text.split("\\.I\\s*");
+            ArrayList<String> docs = new ArrayList<>(Arrays.asList(lines));
+            docs.remove(0);
+            for (String doc: docs) {
+                String items[] = doc.split("\\.[T|A|B|W]");
+                DocumentModel model = new DocumentModel(Integer.parseInt(items[0]), items[1], items[2], items[3], items[4]);
+                processor.process(model);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.getGlobal().log(Level.SEVERE, "Read docs file failed");
+            System.exit(1);
+        }
     }
 
     static ArrayList<String> readQueries() {
-        ArrayList<String> queries = new ArrayList<>();
-
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FileUtils.QUERY_FILE.toFile()));
-            StringBuilder builder = new StringBuilder();
-            String line;
-            // TODO: Failure tolerance
-            while ((line = reader.readLine()) != null) {
-                String identity = line.substring(0, 2);
-                switch (identity) {
-                    case ".I": {
-                        continue;
-                    }
-                    case ".W": {
-                        if (builder.length() != 0) {
-                            String queryStr = builder.toString();
-                            queries.add(queryStr);
-                            builder.setLength(0);
-                        }
-                        break;
-                    }
-                    default: {
-                        builder.append(line);
-                        break;
-                    }
-                }
-            }
-            queries.add(builder.toString());
+            String text = String.join("", reader.lines().collect(Collectors.toList()));
+            String lines[] = text.split("\\.I.*?.W");
+            ArrayList<String> queries = new ArrayList<>(Arrays.asList(lines));
+            queries.remove(0);
+            return queries;
         } catch (Exception e) {
             e.printStackTrace();
+            Logger.getGlobal().log(Level.SEVERE, "Read queries file failed");
             System.exit(1);
         }
 
-        return queries;
+        return null;
     }
 
     static Baselines readBaselines() {
         Baselines baselines = new Baselines();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FileUtils.BASELINE_FILE.toFile()));
-            String line;
+            String line = null;
             int oldQueryId = 1;
             ArrayList<Integer> list = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
@@ -82,7 +77,7 @@ class FileParser {
             baselines.add(list);
         } catch (IOException e) {
             e.printStackTrace();
-            Logger.getGlobal().log(Level.SEVERE, "Read baseline file failed: " + e.toString());
+            Logger.getGlobal().log(Level.SEVERE, "Read baseline file failed");
             System.exit(1);
         }
 
