@@ -1,22 +1,23 @@
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 
-public class FileUtils {
+class FileUtils {
+
     private static final Path TEMP_DIR = Paths.get("temp/");
     private static final Path DOCS_DIR = TEMP_DIR.resolve("docs/");
-    public static final Path INDEX_DIR = TEMP_DIR.resolve("index/");
+    static final Path INDEX_DIR = TEMP_DIR.resolve("index/");
 
-    public static final Path DOCS_FILE = DOCS_DIR.resolve("cran.all.1400");
-    public static final Path QUERY_FILE = DOCS_DIR.resolve("cran.qry");
-    public static final Path BASELINE_FILE = DOCS_DIR.resolve("cranqrel");
+    static final Path DOCS_FILE = DOCS_DIR.resolve("cran.all.1400");
+    static final Path QUERY_FILE = DOCS_DIR.resolve("cran.qry");
+    static final Path BASELINE_FILE = DOCS_DIR.resolve("cranqrel");
 
     private static final URL DOCS_URL;
 
@@ -28,11 +29,10 @@ public class FileUtils {
         }
     }
 
-    public static void initialize() {
+    static void initialize() {
         createDirectory(INDEX_DIR);
         createDirectory(DOCS_DIR);
         Path gzipFile = fetchDocs(DOCS_URL, TEMP_DIR);
-        assert(gzipFile != null);
         decompress(gzipFile, DOCS_DIR);
     }
 
@@ -58,12 +58,12 @@ public class FileUtils {
     }
 
     private static Path fetchDocs(URL url, Path toDir) {
-        try {
-            String urlStr = url.toString();
-            int index = urlStr.lastIndexOf('/');
-            String fileName = urlStr.substring(index + 1);
-            Path path = toDir.resolve(fileName);
+        String urlStr = url.toString();
+        int index = urlStr.lastIndexOf('/');
+        String fileName = urlStr.substring(index + 1);
+        Path path = toDir.resolve(fileName);
 
+        try {
             if (Files.notExists(path)) {
                 InputStream in = url.openStream();
                 Files.copy(in, path);
@@ -72,9 +72,10 @@ public class FileUtils {
             return path;
         } catch (IOException e) {
             e.printStackTrace();
+            Logger.getGlobal().log(Level.SEVERE, "Fetch documents failed");
             System.exit(1);
         }
 
-        return null;
+        return path;
     }
 }
