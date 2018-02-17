@@ -8,20 +8,13 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Indexer {
+class Indexer {
 
-    public Indexer() {
-
-    }
-
-    public void createIndex() {
-        Date start = new Date();
+    void createIndex() {
         try {
-            System.out.println("Indexing to directory '" + FileUtils.INDEX_DIR + "'...");
-
             Analyzer analyzer = new StandardAnalyzer();
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
             config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
@@ -29,68 +22,38 @@ public class Indexer {
             Directory dir = FSDirectory.open(FileUtils.INDEX_DIR);
             IndexWriter writer = new IndexWriter(dir, config);
 
-            indexDocs(writer, FileUtils.DOCS_FILE);
+            indexDocuments(writer);
             writer.close();
-
-            Date end = new Date();
-            System.out.println(end.getTime() - start.getTime() + " total milliseconds");
-
         } catch (IOException e) {
             e.printStackTrace();
+            Logger.getGlobal().log(Level.SEVERE, "Index failed: " + e.toString());
             System.exit(1);
         }
     }
 
-    private void indexDocs(IndexWriter writer, Path path) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(path.toFile()));
+    private void indexDocuments(IndexWriter writer) throws IOException {
+        FileParser.readDocument(document -> {
+            Document luceneDoc = new Document();
 
-        Document doc = new Document();
-        StringBuilder builder = new StringBuilder();
-        String line;
-        // TODO: Failure tolerance, Now assume order: [".I", ".T", ".A", ".B", ".W"]
-        while ((line = reader.readLine()) != null) {
-            String identity = line.substring(0, 2);
-            switch (identity) {
-                case ".I": {
-                    if (builder.length() != 0) {
-                        writer.addDocument(doc);
-                    }
-                    doc = new Document();
-                    StringField field = new StringField("id", line.substring(3, line.length()), Field.Store.YES);
-                    doc.add(field);
-                    break;
-                }
-                case ".T": {
-                    TextField field = new TextField("content", builder.toString(), Field.Store.YES);
-                    builder.setLength(0);
-                    doc.add(field);
-                    break;
-                }
-                case ".A": {
-                    TextField field = new TextField("title", builder.toString(), Field.Store.YES);
-                    builder.setLength(0);
-                    doc.add(field);
-                    break;
-                }
-                case ".B": {
-                    TextField field = new TextField("author", builder.toString(), Field.Store.YES);
-                    builder.setLength(0);
-                    doc.add(field);
-                    break;
-                }
-                case ".W": {
-                    TextField field = new TextField("bibliography", builder.toString(), Field.Store.YES);
-                    builder.setLength(0);
-                    doc.add(field);
-                    break;
-                }
-                default: {
-                    builder.append(line);
-                    break;
-                }
+            StringField id = new StringField("id", Integer.toString(document.getId()), Field.Store.YES);
+            TextField title = new TextField("title", document.getTitle(), Field.Store.YES);
+            TextField author = new TextField("author", document.getAuthor(), Field.Store.YES);
+            TextField source = new TextField("source", document.getSource(), Field.Store.YES);
+            TextField content = new TextField("content", document.getContent(), Field.Store.YES);
+
+            luceneDoc.add(id);
+            luceneDoc.add(title);
+            luceneDoc.add(author);
+            luceneDoc.add(source);
+            luceneDoc.add(content);
+
+            try {
+                writer.addDocument(luceneDoc);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Logger.getGlobal().log(Level.SEVERE, "IndexWriter unable to addDocument: " + e.toString());
+                System.exit(1);
             }
-        }
-
-        reader.close();
+        });
     }
 }
