@@ -11,12 +11,11 @@ public class Main {
 
         Searcher searcher = new Searcher();
         searcher.readIndex();
+        
+        BaselinesModel baselines = FileParser.readBaselines();
 
-        ArrayList<ArrayList<Integer>> baselines = FileParser.readBaselines();
-        ArrayList<String> queries = FileParser.readQueries();
-        int idx = 0;
-        searcher.search(queries.get(idx), 30);
-        Collections.sort(baselines.get(idx));
-        System.out.println(baselines.get(idx));
+        Evaluator evaluator = new Evaluator(searcher, baselines);
+        evaluator.evaluateMAP();
+        evaluator.evaluateRecall();
     }
 }
