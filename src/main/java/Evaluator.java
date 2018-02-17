@@ -1,9 +1,9 @@
 class Evaluator {
 
     private Searcher searcher;
-    private BaselinesModel baselines;
+    private Baselines baselines;
 
-    Evaluator(Searcher searcher, BaselinesModel baseline) {
+    Evaluator(Searcher searcher, Baselines baseline) {
         
     }
 
