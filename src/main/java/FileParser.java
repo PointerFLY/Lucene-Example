@@ -2,9 +2,19 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-public class FileParser {
+class FileParser {
 
-    public static ArrayList<String> readQueries() {
+    @FunctionalInterface
+    interface DocumentProcessor {
+        void process(DocumentModel model);
+    }
+
+    static void readDocument(DocumentProcessor processor) {
+        DocumentModel model = new DocumentModel(1, "", "", "", "");
+        processor.process(model);
+    }
+
+    static ArrayList<String> readQueries() {
         ArrayList<String> queries = new ArrayList<>();
 
         try {
@@ -41,8 +51,8 @@ public class FileParser {
         return queries;
     }
 
-    public static ArrayList<ArrayList<Integer>> readBaselines() {
-        ArrayList<ArrayList<Integer>> baselines = new ArrayList<>();
+    static Baselines readBaselines() {
+        Baselines baselines = new Baselines();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FileUtils.BASELINE_FILE.toFile()));
             String line;
