@@ -22,7 +22,10 @@ class FileParser {
             ArrayList<String> docs = new ArrayList<>(Arrays.asList(lines));
             docs.remove(0);
             for (String doc: docs) {
-                String items[] = doc.split("\\.[T|A|B|W]");
+                String splits[] = doc.split("\\.[T|A|B|W]");
+                String items[] = new String[5];
+                Arrays.fill(items, "");
+                System.arraycopy(splits, 0, items, 0, Math.min(splits.length, 5));
                 DocumentModel model = new DocumentModel(Integer.parseInt(items[0]), items[1], items[2], items[3], items[4]);
                 processor.process(model);
             }
