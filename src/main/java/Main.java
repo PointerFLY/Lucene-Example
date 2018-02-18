@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -10,9 +12,10 @@ public class Main {
         searcher.readIndex();
         
         Baselines baselines = FileParser.readBaselines();
+        ArrayList<String> queries = FileParser.readQueries();
 
-        Evaluator evaluator = new Evaluator(searcher, baselines);
-        evaluator.evaluateMAP();
-        evaluator.evaluateRecall();
+        Evaluator evaluator = new Evaluator(searcher);
+        evaluator.evaluate(0);
+        evaluator.evaluateAll();
     }
 }

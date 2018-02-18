@@ -2,6 +2,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -10,7 +11,6 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,30 +19,41 @@ class Searcher {
     private Analyzer analyzer = new StandardAnalyzer();
     private IndexSearcher searcher;
 
+    static final int NUM_TOP_HITS = 50;
+
     void readIndex() {
         try {
             DirectoryReader reader = DirectoryReader.open(FSDirectory.open(FileUtils.INDEX_DIR));
             searcher = new IndexSearcher(reader);
         } catch (IOException e) {
             e.printStackTrace();
-            Logger.getGlobal().log(Level.SEVERE, "Read index failed: " + e.toString());
+            Logger.getGlobal().log(Level.SEVERE, "Read index failed");
             System.exit(1);
         }
     }
 
-    void search(String queryStr, int num) {
-        QueryParser parser = new QueryParser("content", analyzer);
+    ArrayList<Integer> search(String queryStr) {
+        QueryParser parser = new MultiFieldQueryParser(new String[] { "title", "author", "source", "text" }, analyzer);
 
         try {
             Query query = parser.parse(queryStr);
-            ScoreDoc[] hits = searcher.search(query, num).scoreDocs;
+            ScoreDoc[] hits = searcher.search(query, NUM_TOP_HITS).scoreDocs;
+            ArrayList<Integer> docIds = new ArrayList<>();
+            for (ScoreDoc hit: hits) {
+                Document doc = searcher.doc(hit.doc);
+                int id = Integer.parseInt(doc.get("id"));
+                docIds.add(id);
+            }
+            return docIds;
         } catch (ParseException e) {
             e.printStackTrace();
-            Logger.getGlobal().log(Level.SEVERE, "Can't parse query: " + e.toString());
+            Logger.getGlobal().log(Level.SEVERE, "Can't parse query");
             System.exit(1);
         } catch (IOException ex) {
             ex.printStackTrace();
             System.exit(1);
         }
+
+        return null;
     }
 }
