@@ -15,11 +15,11 @@ class Indexer {
 
     private Analyzer analyzer = new StandardAnalyzer();
 
-    public Analyzer getAnalyzer() {
+    Analyzer getAnalyzer() {
         return analyzer;
     }
 
-    public void setAnalyzer(Analyzer analyzer) {
+    void setAnalyzer(Analyzer analyzer) {
         this.analyzer = analyzer;
     }
 
@@ -44,11 +44,11 @@ class Indexer {
         FileParser.readDocument(document -> {
             Document luceneDoc = new Document();
 
-            StringField id = new StringField("id", Integer.toString(document.getId()), Field.Store.YES);
-            TextField title = new TextField("title", document.getTitle(), Field.Store.YES);
-            TextField author = new TextField("author", document.getAuthor(), Field.Store.YES);
-            TextField source = new TextField("source", document.getSource(), Field.Store.YES);
-            TextField content = new TextField("content", document.getContent(), Field.Store.YES);
+            StringField id = new StringField(DocumentModel.ID, Integer.toString(document.getId()), Field.Store.YES);
+            TextField title = new TextField(DocumentModel.TITLE, document.getTitle(), Field.Store.YES);
+            TextField author = new TextField(DocumentModel.AUTHOR, document.getAuthor(), Field.Store.YES);
+            TextField source = new TextField(DocumentModel.SOURCE, document.getSource(), Field.Store.YES);
+            TextField content = new TextField(DocumentModel.CONTENT, document.getContent(), Field.Store.YES);
 
             luceneDoc.add(id);
             luceneDoc.add(title);

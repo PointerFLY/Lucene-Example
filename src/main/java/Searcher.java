@@ -20,15 +20,15 @@ class Searcher {
     private Analyzer analyzer = new StandardAnalyzer();
     private IndexSearcher searcher;
 
-    public Analyzer getAnalyzer() {
+    Analyzer getAnalyzer() {
         return analyzer;
     }
 
-    public void setAnalyzer(Analyzer analyzer) {
+    void setAnalyzer(Analyzer analyzer) {
         this.analyzer = analyzer;
     }
 
-    public void setSimilarity(Similarity similarity) {
+    void setSimilarity(Similarity similarity) {
         searcher.setSimilarity(similarity);
     }
 
@@ -44,7 +44,8 @@ class Searcher {
     }
 
     ArrayList<Integer> search(String queryStr, int topHitsCount) {
-        QueryParser parser = new MultiFieldQueryParser(new String[] { "title", "author", "source", "text" }, analyzer);
+        // TODO: Different Query and QueryParser
+        QueryParser parser = new MultiFieldQueryParser(new String[] { DocumentModel.TITLE, DocumentModel.AUTHOR, DocumentModel.SOURCE, DocumentModel.CONTENT }, analyzer);
 
         try {
             Query query = parser.parse(queryStr);

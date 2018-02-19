@@ -12,11 +12,14 @@ public class Main {
     public static void main(String[] args) {
         FileUtils.initialize();
 
+        // TODO: Custom analyzer
+        Analyzer analyzer = new StandardAnalyzer();
+
         Indexer indexer = new Indexer();
-        indexer.setAnalyzer(new StandardAnalyzer());
+        indexer.setAnalyzer(analyzer);
         indexer.createIndex();
         Searcher searcher = new Searcher();
-        searcher.setAnalyzer(new StandardAnalyzer());
+        searcher.setAnalyzer(analyzer);
         searcher.readIndex();
 
         Evaluator evaluator = new Evaluator(searcher);
