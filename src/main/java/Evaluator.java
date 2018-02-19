@@ -6,7 +6,7 @@ class Evaluator {
     private Baselines baselines = FileParser.readBaselines();
     private ArrayList<String> queries = FileParser.readQueries();
 
-    private static final int NUM_TOPHITS = 100;
+    private static final int NUM_TOP_HITS = 50;
 
     Evaluator(Searcher searcher) {
         this.searcher = searcher;
@@ -17,7 +17,7 @@ class Evaluator {
         double sumRecall = 0.0;
 
         for (int i = 0; i < queries.size(); i++) {
-            ArrayList<Integer> hitDocIds = searcher.search(queries.get(i), NUM_TOPHITS);
+            ArrayList<Integer> hitDocIds = searcher.search(queries.get(i), NUM_TOP_HITS);
             ArrayList<Integer> standardDocIds = baselines.get(i);
 
             int numTruePositive = 0;
