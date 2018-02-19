@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -16,13 +17,12 @@ class FileParser {
 
     static void readDocument(DocumentProcessor processor) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(FileUtils.DOCS_FILE.toFile()));
-            String text = String.join("", reader.lines().collect(Collectors.toList()));
+            String text = String.join("", Files.readAllLines(FileUtils.DOCS_FILE));
             String lines[] = text.split("\\.I\\s*");
             ArrayList<String> docs = new ArrayList<>(Arrays.asList(lines));
             docs.remove(0);
             for (String doc: docs) {
-                String splits[] = doc.split("\\.[T|A|B|W]");
+                String splits[] = doc.split("\\.[TABW]");
                 String items[] = new String[5];
                 Arrays.fill(items, "");
                 System.arraycopy(splits, 0, items, 0, Math.min(splits.length, 5));
@@ -38,8 +38,8 @@ class FileParser {
 
     static ArrayList<String> readQueries() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(FileUtils.QUERY_FILE.toFile()));
-            String text = String.join("", reader.lines().collect(Collectors.toList()));
+            String text = String.join("", Files.readAllLines(FileUtils.QUERY_FILE));
+            text = text.replace("?", "");
             String lines[] = text.split("\\.I.*?.W");
             ArrayList<String> queries = new ArrayList<>(Arrays.asList(lines));
             queries.remove(0);
