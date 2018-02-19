@@ -45,7 +45,8 @@ class Searcher {
 
     ArrayList<Integer> search(String queryStr, int topHitsCount) {
         // TODO: Different Query and QueryParser
-        QueryParser parser = new MultiFieldQueryParser(new String[] { DocumentModel.TITLE, DocumentModel.AUTHOR, DocumentModel.SOURCE, DocumentModel.CONTENT }, analyzer);
+        String fields[] = new String[] { DocumentModel.TITLE, DocumentModel.AUTHOR, DocumentModel.SOURCE, DocumentModel.CONTENT };
+        QueryParser parser = new MultiFieldQueryParser(fields, analyzer);
 
         try {
             Query query = parser.parse(queryStr);

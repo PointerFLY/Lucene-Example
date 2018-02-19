@@ -16,12 +16,12 @@ class FileParser {
 
     static void readDocument(DocumentProcessor processor) {
         try {
-            String text = String.join("", Files.readAllLines(FileUtils.DOCS_FILE));
+            String text = String.join(" ", Files.readAllLines(FileUtils.DOCS_FILE));
             String lines[] = text.split("\\.I\\s*");
             ArrayList<String> docs = new ArrayList<>(Arrays.asList(lines));
             docs.remove(0);
             for (String doc: docs) {
-                String splits[] = doc.split("\\.[TABW]");
+                String splits[] = doc.split("\\s*\\.[TABW]\\s*");
                 String items[] = new String[5];
                 Arrays.fill(items, "");
                 System.arraycopy(splits, 0, items, 0, Math.min(splits.length, 5));
@@ -37,7 +37,7 @@ class FileParser {
 
     static ArrayList<String> readQueries() {
         try {
-            String text = String.join("", Files.readAllLines(FileUtils.QUERY_FILE));
+            String text = String.join(" ", Files.readAllLines(FileUtils.QUERY_FILE));
             text = text.replace("?", "");
             String lines[] = text.split("\\.I.*?.W");
             ArrayList<String> queries = new ArrayList<>(Arrays.asList(lines));

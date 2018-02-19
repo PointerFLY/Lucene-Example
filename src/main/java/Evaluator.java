@@ -39,13 +39,13 @@ class Evaluator {
             sumRecall += recall;
 
             if (printEachQuery) {
-                System.out.println(String.format("Query: %d, MAP: %.2f, Recall: %.2f", i + 1, meanAveragePrecision, recall));
+                System.out.println(String.format("Query: %d, MAP: %.4f, Recall: %.4f", i + 1, meanAveragePrecision, recall));
             }
         }
 
         double averageMAP = sumMAP / queries.size();
         double averageRecall = sumRecall / queries.size();
 
-        System.out.println(String.format("Average MAP: %.2f, Average Recall: %.2f", averageMAP, averageRecall));
+        System.out.println(String.format("Average MAP: %.4f, Average Recall: %.4f", averageMAP, averageRecall));
     }
 }
