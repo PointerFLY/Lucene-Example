@@ -1,3 +1,7 @@
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.search.similarities.BM25Similarity;
+import org.apache.lucene.search.similarities.ClassicSimilarity;
+
 import java.util.ArrayList;
 
 public class Main {
@@ -7,15 +11,17 @@ public class Main {
 
         Indexer indexer = new Indexer();
         indexer.createIndex();
-
         Searcher searcher = new Searcher();
         searcher.readIndex();
-        
-        Baselines baselines = FileParser.readBaselines();
-        ArrayList<String> queries = FileParser.readQueries();
 
         Evaluator evaluator = new Evaluator(searcher);
-        evaluator.evaluate(0);
+
+        // BM25 Model
+        searcher.setSimilarity(new BM25Similarity());
+        evaluator.evaluateAll();
+
+        // Vector Space Model
+        searcher.setSimilarity(new ClassicSimilarity());
         evaluator.evaluateAll();
     }
 }

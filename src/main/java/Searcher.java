@@ -8,6 +8,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,10 @@ class Searcher {
     private IndexSearcher searcher;
 
     static final int NUM_TOP_HITS = 50;
+
+    public void setSimilarity(Similarity similarity) {
+        searcher.setSimilarity(similarity);
+    }
 
     void readIndex() {
         try {
