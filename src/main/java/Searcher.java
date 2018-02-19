@@ -20,8 +20,6 @@ class Searcher {
     private Analyzer analyzer = new StandardAnalyzer();
     private IndexSearcher searcher;
 
-    static final int NUM_TOP_HITS = 50;
-
     public void setSimilarity(Similarity similarity) {
         searcher.setSimilarity(similarity);
     }
@@ -37,12 +35,12 @@ class Searcher {
         }
     }
 
-    ArrayList<Integer> search(String queryStr) {
+    ArrayList<Integer> search(String queryStr, int topHitsCount) {
         QueryParser parser = new MultiFieldQueryParser(new String[] { "title", "author", "source", "text" }, analyzer);
 
         try {
             Query query = parser.parse(queryStr);
-            ScoreDoc[] hits = searcher.search(query, NUM_TOP_HITS).scoreDocs;
+            ScoreDoc[] hits = searcher.search(query, topHitsCount).scoreDocs;
             ArrayList<Integer> docIds = new ArrayList<>();
             for (ScoreDoc hit: hits) {
                 Document doc = searcher.doc(hit.doc);
