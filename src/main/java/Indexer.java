@@ -13,9 +13,18 @@ import java.util.logging.Logger;
 
 class Indexer {
 
+    private Analyzer analyzer = new StandardAnalyzer();
+
+    public Analyzer getAnalyzer() {
+        return analyzer;
+    }
+
+    public void setAnalyzer(Analyzer analyzer) {
+        this.analyzer = analyzer;
+    }
+
     void createIndex() {
         try {
-            Analyzer analyzer = new StandardAnalyzer();
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
             config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 

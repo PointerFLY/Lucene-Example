@@ -20,6 +20,14 @@ class Searcher {
     private Analyzer analyzer = new StandardAnalyzer();
     private IndexSearcher searcher;
 
+    public Analyzer getAnalyzer() {
+        return analyzer;
+    }
+
+    public void setAnalyzer(Analyzer analyzer) {
+        this.analyzer = analyzer;
+    }
+
     public void setSimilarity(Similarity similarity) {
         searcher.setSimilarity(similarity);
     }

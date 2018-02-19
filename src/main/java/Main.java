@@ -1,4 +1,5 @@
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.BooleanSimilarity;
 import org.apache.lucene.search.similarities.ClassicSimilarity;
@@ -12,8 +13,10 @@ public class Main {
         FileUtils.initialize();
 
         Indexer indexer = new Indexer();
+        indexer.setAnalyzer(new StandardAnalyzer());
         indexer.createIndex();
         Searcher searcher = new Searcher();
+        searcher.setAnalyzer(new StandardAnalyzer());
         searcher.readIndex();
 
         Evaluator evaluator = new Evaluator(searcher);
