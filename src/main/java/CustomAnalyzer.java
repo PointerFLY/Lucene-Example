@@ -1,6 +1,9 @@
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.en.EnglishMinimalStemFilter;
+import org.apache.lucene.analysis.en.EnglishPossessiveFilter;
+import org.apache.lucene.analysis.en.KStemFilter;
+import org.apache.lucene.analysis.en.PorterStemFilter;
 import org.apache.lucene.analysis.standard.ClassicTokenizer;
 
 public class CustomAnalyzer extends Analyzer {
@@ -8,10 +11,13 @@ public class CustomAnalyzer extends Analyzer {
     @Override
     protected TokenStreamComponents createComponents(String fieldName) {
         Tokenizer source = new ClassicTokenizer();
-        TokenStream token = new LowerCaseFilter(source);
+        TokenStream tokenStream = new LowerCaseFilter(source);
+        tokenStream = new EnglishPossessiveFilter(tokenStream);
+        tokenStream = new EnglishMinimalStemFilter(tokenStream);
+        tokenStream = new KStemFilter(tokenStream);
+        tokenStream = new PorterStemFilter(tokenStream);
         CharArraySet stopSet = CharArraySet.copy(StopAnalyzer.ENGLISH_STOP_WORDS_SET);
-        token = new StopFilter(token, stopSet);
-        token = new EnglishMinimalStemFilter(token);
-        return new TokenStreamComponents(source, token);
+        tokenStream = new StopFilter(tokenStream, stopSet);
+        return new TokenStreamComponents(source, tokenStream);
     }
 }
