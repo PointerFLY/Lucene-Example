@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +59,7 @@ class FileParser {
             BufferedReader reader = new BufferedReader(new FileReader(FileUtils.BASELINE_FILE.toFile()));
             String line = null;
             int oldQueryId = 1;
-            ArrayList<Integer> list = new ArrayList<>();
+            HashSet<Integer> set = new HashSet<>();
             while ((line = reader.readLine()) != null) {
                 String[] items = line.split("\\s+");
                 int queryId = Integer.parseInt(items[0]);
@@ -68,15 +69,15 @@ class FileParser {
                 // New queryId starts or not
                 if (queryId != oldQueryId) {
                     oldQueryId = queryId;
-                    baselines.add(list);
-                    list = new ArrayList<>();
+                    baselines.add(set);
+                    set = new HashSet<>();
                 }
                 if (relevance >= 1 && relevance <= 3) {
-                   list.add(documentId);
+                   set.add(documentId);
                 }
             }
             // last queryId
-            baselines.add(list);
+            baselines.add(set);
         } catch (IOException e) {
             e.printStackTrace();
             Logger.getGlobal().log(Level.SEVERE, "Read baseline file failed");

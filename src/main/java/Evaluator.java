@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 
 class Evaluator {
 
@@ -18,7 +19,7 @@ class Evaluator {
 
         for (int i = 0; i < queries.size(); i++) {
             ArrayList<Integer> hitDocIds = searcher.search(queries.get(i), NUM_TOP_HITS);
-            ArrayList<Integer> standardDocIds = baselines.get(i);
+            HashSet<Integer> standardDocIds = baselines.get(i);
 
             int numTruePositive = 0;
             double averagePrecision = 0.0;
