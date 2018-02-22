@@ -33,8 +33,15 @@ class Evaluator {
                 }
             }
 
-            double meanAveragePrecision = (numTruePositive == 0 ? 0.0 : averagePrecisionSum / numTruePositive);
-            double recall = (standardDocIds.size() == 0 ? 0.0 : (double)numTruePositive / standardDocIds.size());
+            double meanAveragePrecision = 0.0;
+            double recall = 0.0;
+            if (standardDocIds.size() == 0) {
+                meanAveragePrecision = 1.0;
+                recall = 1.0;
+            } else {
+                meanAveragePrecision = (numTruePositive == 0 ? 0.0 : averagePrecisionSum / numTruePositive);
+                recall = (double)numTruePositive / standardDocIds.size();
+            }
 
             sumMAP += meanAveragePrecision;
             sumRecall += recall;
