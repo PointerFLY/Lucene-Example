@@ -72,7 +72,7 @@ class FileParser {
                     baselines.add(set);
                     set = new HashSet<>();
                 }
-                if (relevance >= 1 && relevance <= 3) {
+                if (relevance <= 3) {
                    set.add(documentId);
                 }
             }
