@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,11 +38,12 @@ class FileParser {
     }
 
     static ArrayList<String> readQueries() {
+        ArrayList<String> queries = new ArrayList<>();
         try {
             String text = String.join(" ", Files.readAllLines(FileUtils.QUERY_FILE));
             text = text.replace("?", "");
             String lines[] = text.split("\\.I.*?.W");
-            ArrayList<String> queries = new ArrayList<>(Arrays.asList(lines));
+            Collections.addAll(queries, lines);
             queries.remove(0);
             return queries;
         } catch (Exception e) {
@@ -50,7 +52,7 @@ class FileParser {
             System.exit(1);
         }
 
-        return null;
+        return queries;
     }
 
     static Baselines readBaselines() {
