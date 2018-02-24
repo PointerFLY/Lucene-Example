@@ -1,5 +1,19 @@
 # Lucene-Example
 
+A simple document search engine powered by Lucene.
+
+## How to run
+
+[Gradle](https://gradle.org) is used thoroughly in this project. Check out build.gradle by yourself if you have knowledge on Gradle.  
+I recommend open it with IDE who supports Gradle, such as [Intellij IDEA](https://www.jetbrains.com/idea/).
+
+```bash
+# Make sure gradle is installed.
+git clone https://github.com/PointerFLY/Lucene-Example.git
+cd Lucene-Example
+gradle run
+```
+
 ## Class Structure
 
 |Class|Functionality|
@@ -21,7 +35,7 @@ Built-in Analyzer in Lucene, the most robust one. Filters StandardTokenizer with
 * CustomAnalyzer
 I select differnt tokenizer and filters, combine them, fine-tune the pipeline. Finally choose a analysis pipeline below:
 
-```Java
+```java
 public class CustomAnalyzer extends Analyzer {
 
     @Override
