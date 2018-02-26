@@ -10,13 +10,13 @@ public class Main {
         FileUtils.initialize();
 
         System.out.print("StandardAnalyzer, VSM: ");
-        runModels(new StandardAnalyzer(), new ClassicSimilarity());
+        runModel(new StandardAnalyzer(), new ClassicSimilarity());
         System.out.print("StandardAnalyzer, BM25: ");
-        runModels(new StandardAnalyzer(), new BM25Similarity());
+        runModel(new StandardAnalyzer(), new BM25Similarity());
         System.out.print("CustomAnalyzer, VSM: ");
-        runModels(new CustomAnalyzer(), new ClassicSimilarity());
+        runModel(new CustomAnalyzer(), new ClassicSimilarity());
         System.out.print("CustomAnalyzer, BM25: ");
-        runModels(new CustomAnalyzer(), new BM25Similarity());
+        runModel(new CustomAnalyzer(), new BM25Similarity());
     }
 
     private static void queryOne(int id) {
@@ -36,7 +36,7 @@ public class Main {
         System.out.println(docs);
     }
 
-    private static void runModels(Analyzer analyzer, Similarity similarity) {
+    private static void runModel(Analyzer analyzer, Similarity similarity) {
         Indexer indexer = new Indexer();
         indexer.setAnalyzer(analyzer);
         indexer.createIndex();

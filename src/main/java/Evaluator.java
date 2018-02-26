@@ -36,7 +36,7 @@ class Evaluator {
 
             double averagePrecision = 0.0;
             double recall = 0.0;
-            if (standardDocIds.size() == 0) { // if standard answer is 0, set MAP and recall to 0.0
+            if (standardDocIds.size() == 0) { // if standard answer is 0, set MAP and recall to 1.0
                 averagePrecision = 1.0;
                 recall = 1.0;
             } else {
